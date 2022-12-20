@@ -63,5 +63,25 @@ namespace KeepTalkingAndNobodyExplodes_bhaptics
             }
         }
 
+        [HarmonyPatch(typeof(TimerComponent), "StopTimer", new Type[] {  })]
+        public class bhaptics_StopTimer
+        {
+            [HarmonyPostfix]
+            public static void Postfix()
+            {
+                tactsuitVr.StopThreads();
+            }
+        }
+
+        [HarmonyPatch(typeof(TimerComponent), "Update", new Type[] { })]
+        public class bhaptics_UpdateTimer
+        {
+            [HarmonyPostfix]
+            public static void Postfix(TimerComponent __instance)
+            {
+                if (__instance.TimeRemaining <= 60f) tactsuitVr.StartHeartBeat();
+                else tactsuitVr.StopHeartBeat();
+            }
+        }
     }
 }
